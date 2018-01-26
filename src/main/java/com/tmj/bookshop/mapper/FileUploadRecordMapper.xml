@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmj.bookshop.mapper.FileUploadRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.tmj.bookshop.model.FileUploadRecord" >
+    <constructor >
+      <idArg column="file_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="file_path" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="mime" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="file_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="upload_datetime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    file_id, file_path, mime, file_name, upload_datetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_file_upload_record
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_file_upload_record
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tmj.bookshop.model.FileUploadRecord" >
+    insert into t_file_upload_record (file_id, file_path, mime, 
+      file_name, upload_datetime)
+    values (#{fileId,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{mime,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{uploadDatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tmj.bookshop.model.FileUploadRecord" >
+    insert into t_file_upload_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fileId != null" >
+        file_id,
+      </if>
+      <if test="filePath != null" >
+        file_path,
+      </if>
+      <if test="mime != null" >
+        mime,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+      <if test="uploadDatetime != null" >
+        upload_datetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fileId != null" >
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="mime != null" >
+        #{mime,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadDatetime != null" >
+        #{uploadDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tmj.bookshop.model.FileUploadRecord" >
+    update t_file_upload_record
+    <set >
+      <if test="filePath != null" >
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="mime != null" >
+        mime = #{mime,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadDatetime != null" >
+        upload_datetime = #{uploadDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tmj.bookshop.model.FileUploadRecord" >
+    update t_file_upload_record
+    set file_path = #{filePath,jdbcType=VARCHAR},
+      mime = #{mime,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      upload_datetime = #{uploadDatetime,jdbcType=TIMESTAMP}
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+</mapper>

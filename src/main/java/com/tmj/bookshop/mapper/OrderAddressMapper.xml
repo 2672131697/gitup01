@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmj.bookshop.mapper.OrderAddressMapper" >
+  <resultMap id="BaseResultMap" type="com.tmj.bookshop.model.OrderAddress" >
+    <constructor >
+      <idArg column="address_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="receiver" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="postcode" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="address_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="fhfs" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="mraddress" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="isvoid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    address_id, receiver, phone, postcode, address_name, fhfs, user_id, mraddress, isvoid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_address
+    where address_id = #{addressId,jdbcType=INTEGER}
+  </select>
+
+  <select id="listAddress" resultType="orderAddress" parameterType="orderAddress">
+    select address_id addressId,receiver,phone,postcode,address_name addressName,fhfs,user_id userId,mraddress,isvoid
+    from t_order_address
+    where user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="orderAddress" resultType="orderAddress" parameterType="int">
+     select address_id addressId,receiver,phone,postcode,address_name addressName,fhfs,user_id userId,mraddress,isvoid
+    from t_order_address
+    where mraddress=#{mraddress,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_order_address
+    where address_id = #{addressId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tmj.bookshop.model.OrderAddress" >
+    insert into t_order_address (address_id, receiver, phone, 
+      postcode, address_name, fhfs, 
+      user_id, mraddress, isvoid
+      )
+    values (#{addressId,jdbcType=INTEGER}, #{receiver,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{postcode,jdbcType=VARCHAR}, #{addressName,jdbcType=VARCHAR}, #{fhfs,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{mraddress,jdbcType=INTEGER}, #{isvoid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tmj.bookshop.model.OrderAddress" keyProperty="addressId" useGeneratedKeys="true">
+    insert into t_order_address
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        address_id,
+      </if>
+      <if test="receiver != null" >
+        receiver,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="postcode != null" >
+        postcode,
+      </if>
+      <if test="addressName != null" >
+        address_name,
+      </if>
+      <if test="fhfs != null" >
+        fhfs,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="mraddress != null" >
+        mraddress,
+      </if>
+      <if test="isvoid != null" >
+        isvoid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        #{addressId,jdbcType=INTEGER},
+      </if>
+      <if test="receiver != null" >
+        #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName != null" >
+        #{addressName,jdbcType=VARCHAR},
+      </if>
+      <if test="fhfs != null" >
+        #{fhfs,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="mraddress != null" >
+        #{mraddress,jdbcType=INTEGER},
+      </if>
+      <if test="isvoid != null" >
+        #{isvoid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tmj.bookshop.model.OrderAddress" >
+    update t_order_address
+    <set >
+      <if test="receiver != null" >
+        receiver = #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        postcode = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName != null" >
+        address_name = #{addressName,jdbcType=VARCHAR},
+      </if>
+      <if test="fhfs != null" >
+        fhfs = #{fhfs,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="mraddress != null" >
+        mraddress = #{mraddress,jdbcType=INTEGER},
+      </if>
+      <if test="isvoid != null" >
+        isvoid = #{isvoid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where address_id = #{addressId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tmj.bookshop.model.OrderAddress" >
+    update t_order_address
+    set receiver = #{receiver,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      postcode = #{postcode,jdbcType=VARCHAR},
+      address_name = #{addressName,jdbcType=VARCHAR},
+      fhfs = #{fhfs,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      mraddress = #{mraddress,jdbcType=INTEGER},
+      isvoid = #{isvoid,jdbcType=INTEGER}
+    where address_id = #{addressId,jdbcType=INTEGER}
+  </update>
+
+  <update id="editMoRenAddress" parameterType="orderAddress">
+    update t_order_address set mraddress=0 where user_id=#{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

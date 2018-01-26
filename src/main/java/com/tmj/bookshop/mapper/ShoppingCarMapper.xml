@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmj.bookshop.mapper.ShoppingCarMapper" >
+  <resultMap id="BaseResultMap" type="com.tmj.bookshop.model.ShoppingCar" >
+    <constructor >
+      <idArg column="car_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="quantity" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    car_id, book_id, user_id, quantity
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Book" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_shopping_car
+    where book_id = #{bookId,jdbcType=INTEGER} and user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <resultMap id="shoppingCar" type="ShoppingCar">
+    <id column="car_id" property="carId" javaType="int"/>
+    <result column="book_id" property="bookId" javaType="int"/>
+    <result column="user_id" property="userId" javaType="int"/>
+    <result column="quantity" property="quantity" javaType="int"/>
+
+    <association property="books" javaType="Book">
+      <id column="book_id" property="bookId" javaType="int"/>
+      <result column="book_name" property="bookName" javaType="string"/>
+      <result column="category_id" property="categoryId" javaType="int"/>
+      <result column="book_author" property="bookAuthor" javaType="string"/>
+      <result column="book_price" property="bookPrice" javaType="float"/>
+      <result column="book_press" property="bookPress" javaType="string"/>
+      <result column="remark" property="remark" javaType="string"/>
+      <result column="book_status" property="bookStatus" javaType="int"/>
+      <result column="kucun" property="kucun" javaType="int"/>
+      <result column="xl" property="xl" javaType="int"/>
+      <result column="sjtime" property="sjtime" javaType="java.util.Date"/>
+      <result column="cover" property="cover" javaType="string"/>
+      <result column="isvoid" property="isvoid" javaType="int"/>
+    </association>
+  </resultMap>
+
+  <select id="listShoppCar" resultMap="shoppingCar" parameterType="shoppingCar">
+     select c.*,b.*
+     from t_shopping_car c inner join t_book b on c.book_id=b.book_id
+     where c.user_id=#{userId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_shopping_car
+    where car_id = #{carId,jdbcType=INTEGER}
+  </delete>
+  <!--清空购物车 根据用户的ID-->
+    <delete id="doQingKongCar" parameterType="shoppingCar">
+      delete from t_shopping_car
+      where book_id in
+      <foreach collection="bookIds" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+      and user_id=#{userId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.tmj.bookshop.model.ShoppingCar" >
+    insert into t_shopping_car (car_id, book_id, user_id, 
+      quantity)
+    values (#{carId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{quantity,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tmj.bookshop.model.ShoppingCar" >
+    insert into t_shopping_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="quantity != null" >
+        quantity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="bookId != null" >
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tmj.bookshop.model.ShoppingCar" >
+    update t_shopping_car
+    <set >
+      <if test="bookId != null" >
+        book_id = #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+    </set>
+    where car_id = #{carId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tmj.bookshop.model.ShoppingCar" >
+    update t_shopping_car
+    set book_id = #{bookId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=INTEGER}
+    where car_id = #{carId,jdbcType=INTEGER}
+  </update>
+</mapper>

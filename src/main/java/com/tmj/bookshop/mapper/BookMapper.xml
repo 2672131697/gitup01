@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmj.bookshop.mapper.BookMapper" >
+  <resultMap id="BaseResultMap" type="com.tmj.bookshop.model.Book" >
+    <constructor >
+      <idArg column="book_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_author" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_price" jdbcType="REAL" javaType="java.lang.Float" />
+      <arg column="book_press" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="kucun" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="xl" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sjtime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="cover" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="isvoid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, book_name, category_id, book_author, book_price, book_press, remark, book_status, 
+    kucun, xl, sjtime, cover, isvoid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_book
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </select>
+
+  <!--根据书本的状态查 未上架  已上架  已下架 的商品-->
+  <select id="listBook" resultType="book" parameterType="book">
+     select book_id bookId,book_name bookName,category_id categoryId,book_author bookAuthor,book_price bookPrice,book_press bookPress,
+    remark remark,book_status bookStatus,kucun kucun,xl xl,sjtime sjtime,cover cover,isvoid isvoid
+     from t_book
+     <where>
+       <if test="null!=bookStatus">
+         and book_status=#{bookStatus}
+       </if>
+       and isvoid=0
+       <if test="'xssj'==wxhn">
+         order by sjtime desc limit 0,5
+       </if>
+
+     </where>
+
+  </select>
+
+  <resultMap id="bookrow" type="Book">
+      <id column="book_id" property="bookId" javaType="int"/>
+      <result column="book_name" property="bookName" javaType="string"/>
+      <result column="category_id" property="categoryId" javaType="int"/>
+      <result column="book_author" property="bookAuthor" javaType="string"/>
+      <result column="book_price" property="bookPrice" javaType="float"/>
+
+
+      <result column="book_press" property="bookPress" javaType="string"/>
+     <result column="remark" property="remark" javaType="string"/>
+     <result column="book_status" property="bookStatus" javaType="int"/>
+    <result column="kucun" property="kucun" javaType="int"/>
+     <result column="xl" property="xl" javaType="int"/>
+
+      <result column="sjtime" property="sjtime" javaType="java.util.Date"/>
+     <result column="cover" property="cover" javaType="string"/>
+     <result column="isvoid" property="isvoid" javaType="int"/>
+
+
+    <association property="bookCategorys" javaType="BookCategory">
+      <id column="category_id" property="categoryId" javaType="int"/>
+      <result column="category_name" property="categoryName" javaType="string"/>
+    </association>
+  </resultMap>
+  <!--根据类别查询图书  查已上架的-->
+  <select id="listBookCategoryDeShu" resultMap="bookrow" parameterType="book">
+      select c.category_id,c.category_name,b.book_id,b.book_name,b.category_id,b.book_author,b.book_price,b.book_press,b.remark,b.book_status,
+    b.kucun, b.xl, b.sjtime, b.cover, b.isvoid
+      from t_book_category c inner join t_book b on c.category_id=b.category_id
+      where b.category_id = #{categoryId,jdbcType=INTEGER} and b.book_status=1
+  </select>
+
+  <!--根据销量查 降序 前5 -->
+  <select id="listBookxl" resultType="book" parameterType="book">
+    select book_id bookId,book_name bookName,category_id categoryId,book_author bookAuthor,book_price bookPrice,book_press bookPress,
+    remark remark,book_status bookStatus,kucun kucun,xl xl,sjtime sjtime,cover cover,isvoid isvoid
+    from t_book
+    where book_status=1 and isvoid=0 order by xl desc limit 0,5
+  </select>
+
+
+  <resultMap id="bookRow" type="Book">
+    <id column="book_id" property="bookId" javaType="int"/>
+    <result column="book_name" property="bookName" javaType="string"/>
+    <result column="category_id" property="categoryId" javaType="int"/>
+    <result column="book_author" property="bookAuthor" javaType="string"/>
+    <result column="book_price" property="bookPrice" javaType="float"/>
+
+
+    <result column="book_press" property="bookPress" javaType="string"/>
+    <result column="remark" property="remark" javaType="string"/>
+    <result column="book_status" property="bookStatus" javaType="int"/>
+    <result column="kucun" property="kucun" javaType="int"/>
+    <result column="xl" property="xl" javaType="int"/>
+
+    <result column="sjtime" property="sjtime" javaType="java.util.Date"/>
+    <result column="cover" property="cover" javaType="string"/>
+    <result column="isvoid" property="isvoid" javaType="int"/>
+
+
+    <association property="shoppingCar" javaType="ShoppingCar">
+      <id column="car_id" property="carId" javaType="int"/>
+
+      <result column="book_id" property="bookId" javaType="int"/>
+      <result column="user_id" property="userId" javaType="int"/>
+      <result column="quantity" property="quantity" javaType="int"/>
+    </association>
+
+  </resultMap>
+    <select id="listBookId" resultMap="bookRow" parameterType="book">
+      select b.*,c.*
+      from t_book b left join t_shopping_car c on b.book_id=c.book_id
+      where b.book_id in
+      <foreach collection="bookIds" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_book
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tmj.bookshop.model.Book" >
+    insert into t_book (book_id, book_name, category_id, 
+      book_author, book_price, book_press, 
+      remark, book_status, kucun, 
+      xl, sjtime, cover, 
+      isvoid)
+    values (#{bookId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, 
+      #{bookAuthor,jdbcType=VARCHAR}, #{bookPrice,jdbcType=REAL}, #{bookPress,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{bookStatus,jdbcType=INTEGER}, #{kucun,jdbcType=INTEGER}, 
+      #{xl,jdbcType=INTEGER}, #{sjtime,jdbcType=TIMESTAMP}, #{cover,jdbcType=VARCHAR}, 
+      #{isvoid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tmj.bookshop.model.Book" keyProperty="bookId" useGeneratedKeys="true" >
+    insert into t_book
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="bookName != null" >
+        book_name,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="bookAuthor != null" >
+        book_author,
+      </if>
+      <if test="bookPrice != null" >
+        book_price,
+      </if>
+      <if test="bookPress != null" >
+        book_press,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="bookStatus != null" >
+        book_status,
+      </if>
+      <if test="kucun != null" >
+        kucun,
+      </if>
+      <if test="xl != null" >
+        xl,
+      </if>
+      <if test="sjtime != null" >
+        sjtime,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="isvoid != null" >
+        isvoid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null" >
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bookAuthor != null" >
+        #{bookAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPrice != null" >
+        #{bookPrice,jdbcType=REAL},
+      </if>
+      <if test="bookPress != null" >
+        #{bookPress,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bookStatus != null" >
+        #{bookStatus,jdbcType=INTEGER},
+      </if>
+      <if test="kucun != null" >
+        #{kucun,jdbcType=INTEGER},
+      </if>
+      <if test="xl != null" >
+        #{xl,jdbcType=INTEGER},
+      </if>
+      <if test="sjtime != null" >
+        #{sjtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="isvoid != null" >
+        #{isvoid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tmj.bookshop.model.Book" >
+    update t_book
+    <set >
+      <if test="bookName != null" >
+        book_name = #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bookAuthor != null" >
+        book_author = #{bookAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPrice != null" >
+        book_price = #{bookPrice,jdbcType=REAL},
+      </if>
+      <if test="bookPress != null" >
+        book_press = #{bookPress,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bookStatus != null" >
+        book_status = #{bookStatus,jdbcType=INTEGER},
+      </if>
+      <if test="kucun != null" >
+        kucun = #{kucun,jdbcType=INTEGER},
+      </if>
+      <if test="xl != null" >
+        xl = #{xl,jdbcType=INTEGER},
+      </if>
+      <if test="sjtime != null" >
+        sjtime = #{sjtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cover != null" >
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="isvoid != null" >
+        isvoid = #{isvoid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tmj.bookshop.model.Book" >
+    update t_book
+    set book_name = #{bookName,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      book_author = #{bookAuthor,jdbcType=VARCHAR},
+      book_price = #{bookPrice,jdbcType=REAL},
+      book_press = #{bookPress,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      book_status = #{bookStatus,jdbcType=INTEGER},
+      kucun = #{kucun,jdbcType=INTEGER},
+      xl = #{xl,jdbcType=INTEGER},
+      sjtime = #{sjtime,jdbcType=TIMESTAMP},
+      cover = #{cover,jdbcType=VARCHAR},
+      isvoid = #{isvoid,jdbcType=INTEGER}
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+  <update id="delete" parameterType="Book">
+     update t_book set isvoid =1 where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+</mapper>

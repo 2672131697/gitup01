@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="SLF4J"/>
+        <!-- 开启二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+
+        <!--打开延迟加载的开关-->
+        <!--<setting name="lazyLoadingEnabled" value="true"/>-->
+
+        <!-- 将积极加载改为消极加载 即按需要加载-->
+        <!--<setting name="aggressiveLazyLoading" value="false"/>-->
+    </settings>
+
+    <!-- 别名 -->
+    <!--<typeAliases>
+       <typeAlias type="com.tmj.zf.model.Fwlx" alias="Fwlx"/>
+        <typeAlias type="com.tmj.zf.model.Yh" alias="Yh"/>
+        <typeAlias type="com.tmj.zf.model.Fwxx" alias="Fwxx"/>
+    </typeAliases>-->
+    <!--批量定义别名 指定包名：mybatis自动扫描包中的实例类,自定义别名,别名就是类名(首字母大写或小写都可以)-->
+    <typeAliases>
+        <package name="com.tmj.bookshop.model" />
+    </typeAliases>
+
+
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+        </plugin>
+    </plugins>
+</configuration>
